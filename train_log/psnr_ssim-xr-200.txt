@@ -1,0 +1,30 @@
+===>tensor([1])th video avg wsPSNR:17.3361 dB,wsSSIM:0.307810
+===>tensor([2])th video avg wsPSNR:17.7847 dB,wsSSIM:0.383551
+===>tensor([3])th video avg wsPSNR:17.0897 dB,wsSSIM:0.281462
+===>tensor([4])th video avg wsPSNR:17.8565 dB,wsSSIM:0.299518
+===>all videos avg wsPSNR:17.5167 dB,wsSSIM:0.318085
+
+===>tensor([1])th video avg wsPSNR:10.5609 dB,wsSSIM:0.558396
+===>tensor([2])th video avg wsPSNR:10.6301 dB,wsSSIM:0.664331
+===>tensor([3])th video avg wsPSNR:10.5908 dB,wsSSIM:0.630186
+===>tensor([4])th video avg wsPSNR:10.6484 dB,wsSSIM:0.666422
+===>all videos avg wsPSNR:10.6075 dB,wsSSIM:0.629834
+
+===>tensor([1])th video avg wsPSNR:19.4617 dB,wsSSIM:0.625811
+===>tensor([2])th video avg wsPSNR:19.8412 dB,wsSSIM:0.754331
+===>tensor([3])th video avg wsPSNR:19.9696 dB,wsSSIM:0.719612
+===>tensor([4])th video avg wsPSNR:20.0663 dB,wsSSIM:0.779093
+===>all videos avg wsPSNR:19.8347 dB,wsSSIM:0.719712
+
+===>tensor([1])th video avg wsPSNR:24.1423 dB,wsSSIM:0.743112
+===>tensor([2])th video avg wsPSNR:24.1082 dB,wsSSIM:0.735281
+===>tensor([3])th video avg wsPSNR:23.7988 dB,wsSSIM:0.675793
+===>tensor([4])th video avg wsPSNR:24.1177 dB,wsSSIM:0.756327
+===>all videos avg wsPSNR:24.0418 dB,wsSSIM:0.732628
+
+===>tensor([1])th video avg wsPSNR:22.8751 dB,wsSSIM:0.568438
+===>tensor([2])th video avg wsPSNR:23.8060 dB,wsSSIM:0.703570
+===>tensor([3])th video avg wsPSNR:23.9737 dB,wsSSIM:0.632752
+===>tensor([4])th video avg wsPSNR:24.3795 dB,wsSSIM:0.727260
+===>all videos avg wsPSNR:23.7586 dB,wsSSIM:0.658005
+===>tensor([1])th video avg wsPSNR:0.1133 dB,wsSSIM:0.003273
