@@ -12,7 +12,9 @@
 ## Datasets
 The testing dataset can be obtained in https://drive.google.com/drive/folders/1CcBiblzkHVXZ1aSdSdZgvGPUkWuoMsE1?usp=sharing
 ## Train
+```
 python train.py
+```
 ## Test
 ```
 python test.py
