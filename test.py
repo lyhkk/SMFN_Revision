@@ -29,13 +29,15 @@ parser = argparse.ArgumentParser(description='PyTorch Super Res Example')
 # 属性给与args实例： 把parser中设置的所有"add_argument"给返回到args子类实例当中
 args = parser.parse_args()
 opt = get_config(args)
-gpus_list = range(0, opt['System']['gpus'])
+#gpus_list = range(0, opt['System']['gpus'])
+device_ids = [Id for Id in range(torch.cuda.device_count())]
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 def test():
     
     '''
-    训练时并行的，测试时也应当并行，不然会报告如下的错误：
+    训练时并行的，测试时也应当并行，不然会报告如下的错误
     Missing key(s) in state_dict: ...(如: conv1.weight)
     '''
     print('testing processing....')
@@ -43,9 +45,10 @@ def test():
     #加载模型
     test_model = VRCNN(opt['test']['upscale_factor']) # 4倍SR
     # test_model = torch.nn.DataParallel(test_model,device_ids=gpus_list,output_device=gpus_list[1])
-    test_model = torch.nn.DataParallel(test_model, device_ids=[0], output_device=gpus_list[1])
+    if(len(device_ids) > 1):
+        test_model = torch.nn.DataParallel(test_model, device_ids=device_ids, output_device=device_ids[0])
 
-    test_model = test_model.cuda(gpus_list[0])
+    test_model = test_model.cuda(device_ids[0])
 
     print('---------- Networks architecture -------------')
     print_network(test_model)  # 打印模型参数量
@@ -82,7 +85,7 @@ def test():
                 test_model.eval()
                 # dual_net.eval()
                 batch_lr_y, label, SR_cb, SR_cr, idx, bicubic_restore = data
-                batch_lr_y, label = Variable(batch_lr_y).cuda(gpus_list[0]), Variable(label).cuda(gpus_list[0])
+                batch_lr_y, label = Variable(batch_lr_y).cuda(device_ids[0]), Variable(label).cuda(device_ids[0])
                 output = test_model(batch_lr_y)
                 '''
                 print(batch_lr_y.size())

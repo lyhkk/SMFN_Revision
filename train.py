@@ -16,13 +16,11 @@ import time
 from tqdm import tqdm
 from tensorboardX import SummaryWriter
 from torchvision.transforms import ToPILImage, ToTensor
-from metrics.psnr import psnr, calculate_ssim
 from metrics.ws_ssim import ws_ssim
 from metrics.psnr import ws_psnr, ws_psnr2, psnr, calculate_ssim
 import random
 from torch.optim.lr_scheduler import StepLR
 from config import get_config
-
 
 
 # Training settings 建立解析对象
@@ -43,9 +41,8 @@ random.seed(seed)
 model_name = os.path.join(opt['train']['best_model_save_folder'], opt['train']['model_pth'])
 
 # gpu的编号
-gpus_list = range(0, opt['System']['gpus'])
-# device_ids = [Id for Id in range(torch.cuda.device_count())]
-# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device_ids = [Id for Id in range(torch.cuda.device_count())]
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # 加载训练数据集
 # tr_dataset_hr = opt['train']['train_dataset']()
@@ -75,15 +72,17 @@ print('===> Building model')
 vrcnn = VRCNN(opt['train']['upscale_factor'], is_training=opt['train']['is_training'])
 dual_net = dual_network()
 model = Net(vrcnn, dual_net)
-
-if opt['System']['cuda'] and len(gpus_list) > 1:
-    model = torch.nn.DataParallel(model, device_ids=None, output_device=gpus_list[1]) # device_ids = gpus_list
-    model = model.cuda(gpus_list[0])
+model = model.to(device)
+''' 
+# DataParallel将模型复制到多个GPU上, 然后将它们的输出合并在一起。这样加快了时间，但是需要更多的显存。 
+if torch.cuda.device_count() > 1:
+    model = torch.nn.DataParallel(model, device_ids=device_ids) # device_ids = gpus_list
+ '''
 print_network(model)
 
 # 定义损失函数和优化器
 criterion = mse_weight_loss()
-criterion = criterion.cuda(gpus_list[0])
+criterion = criterion.cuda(device_ids[0])
 optimizer = optim.Adam(model.parameters(), lr=opt['train']['lr'], betas=(0.9, 0.999))
 # 设置20epochs后学习率减半
 scheduler = StepLR(optimizer, step_size=opt['train']['lr_decay_epoch'], gamma=opt['train']['lr_decay'])
@@ -186,14 +185,13 @@ def validate(valLoader, model):
     with torch.no_grad():
         ave_psnr = 0
         ave_ssim = 0
-        # numb = 2
         val_bar = tqdm(valLoader)
         for data in val_bar:
             model.eval()
             # dual_net.eval()
             batch_lr_y, label, SR_cb, SR_cr, idx, bicubic_restore = data
             batch_lr_y, label = Variable(batch_lr_y).cuda(gpus_list[0]), Variable(label).cuda(gpus_list[0])
-            output, out_dual = model(batch_lr_y)
+            output, _ = model(batch_lr_y)
             
             SR_ycbcr = np.concatenate((np.array(output.squeeze(0).data.cpu()), SR_cb, SR_cr), axis=0).transpose(1, 2, 0)
             SR_rgb = ycbcr2rgb(SR_ycbcr) * 255.0
